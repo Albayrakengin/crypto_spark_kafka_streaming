@@ -1,10 +1,6 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-import requests
-import json
-import logging
-import time
 
 
 default_args = {
