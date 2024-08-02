@@ -125,6 +125,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./scripts/entrypoint.sh:/opt/airflow/scripts/entrypoint.sh
       - ./requirements.txt:/opt/airflow/requirements.txt
+      - ./news_scrape:/opt/airflow/news_scrape
     ports:
       - "8080:8080"
     healthcheck:
@@ -144,6 +145,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./scripts/entrypoint.sh:/opt/airflow/scripts/entrypoint.sh
       - ./requirements.txt:/opt/airflow/requirements.txt
+      - ./news_scrape:/opt/airflow/news_scrape
     environment:
       - LOAD_EX=n
       - EXECUTOR=Sequential
@@ -155,6 +157,9 @@ services:
       - AIRFLOW_ROLE=${AIRFLOW_ROLE}
       - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
       - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
+      - NEWS_URL=${NEWS_URL}
+      - PYTHONPATH=/opt/airflow/news_scrape
+      - SCRAPY_SETTINGS_MODULE=news_scrape.settings
     command: bash -c "pip install -r ./requirements.txt && airflow db upgrade && airflow scheduler"
     networks:
       - confluent
