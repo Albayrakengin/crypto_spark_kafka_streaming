@@ -15,6 +15,6 @@ with DAG('scrape_dag',
 
     scraping_task = BashOperator(
         task_id='scraping_task',
-        bash_command='scrapy crawl newspider',
+        bash_command='scrapy crawl newspider -a tag=bitcoin',
         dag=dag
     )
