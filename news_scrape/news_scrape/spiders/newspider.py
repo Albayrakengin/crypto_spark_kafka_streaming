@@ -14,6 +14,7 @@ class NewSpider(scrapy.Spider):
     page_counter = 0
 
     def __init__(self, *args, **kwargs):
+        self.tag = getattr(self, "tag", None)
         super(NewSpider, self).__init__(*args, **kwargs)
         self.producer = KafkaProducer(   
         bootstrap_servers=['broker:29092'],
@@ -22,9 +23,8 @@ class NewSpider(scrapy.Spider):
 
     def start_requests(self):
         url = os.getenv('NEWS_URL')
-        tag = getattr(self, "tag", None)
-        if tag is not None:
-            url = url + "tag/" + tag
+        if self.tag is not None:
+            url = url + "tag/" + self.tag
         yield scrapy.Request(url, self.parse)
 
     def parse(self, response):
@@ -40,7 +40,7 @@ class NewSpider(scrapy.Spider):
                 "title": titles,
                 "description": description
             }
-            self.producer.send('ratatoy', value=data)
+            self.producer.send(self.tag, value=data)
             yield data
 
         next_page = response.xpath("//meta[@property='og:url']/@content").get()
